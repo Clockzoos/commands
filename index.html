@@ -1,58 +1,359 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The #1 ad-link bypasser. Paste and unlock.</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Free Ad-Link Bypasser for Linkvertise, LootLabs & More</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #09090b;
+            color: #f4f4f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background Grid & Glow Effects ala bypass.lc */
+        .bg-matrix {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            z-index: 0;
+        }
+
+        .glow-spot {
+            position: absolute;
+            top: -10vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60vw;
+            height: 40vh;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 14px 6px 6px;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(24, 24, 27, 0.6);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .logo-badge img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        main {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+
+        h1 span {
+            color: #71717a;
+        }
+
+        p.subtitle {
+            font-size: clamp(0.95rem, 2vw, 1.15rem);
+            color: #a1a1aa;
+            max-width: 520px;
+            line-height: 1.5;
+            margin-bottom: 36px;
+        }
+
+        /* Form Input Container */
+        .form-container {
+            width: 100%;
+            max-width: 640px;
+            background: rgba(24, 24, 27, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            padding: 8px 8px 8px 20px;
+            display: flex;
+            align-items: center;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: border-color 0.2s;
+        }
+
+        .form-container:focus-within {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .form-container i.link-icon {
+            color: #71717a;
+            margin-right: 12px;
+        }
+
+        .form-container input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-container input::placeholder {
+            color: #52525b;
+        }
+
+        .unlock-btn {
+            background-color: #fff;
+            color: #09090b;
+            border: none;
+            border-radius: 9999px;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.2s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .unlock-btn:hover {
+            opacity: 0.9;
+        }
+
+        .unlock-btn:active {
+            transform: scale(0.98);
+        }
+
+        .unlock-btn:disabled {
+            background-color: #27272a;
+            color: #71717a;
+            cursor: not-allowed;
+        }
+
+        /* Result & Error Box */
+        .result-box, .error-box {
+            width: 100%;
+            max-width: 640px;
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 16px;
+            text-align: left;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .result-box {
+            background: rgba(6, 78, 59, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .result-header {
+            color: #34d399;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .result-content {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .result-content input {
+            width: 100%;
+            background: rgba(9, 9, 11, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #34d399;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        #copyBtn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        #copyBtn:hover {
+            background: #047857;
+        }
+
+        .open-link {
+            display: block;
+            text-align: center;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .open-link:hover {
+            background: rgba(16, 185, 129, 0.25);
+        }
+
+        .error-box {
+            background: rgba(127, 29, 29, 0.3);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 24px;
+            font-size: 0.85rem;
+            color: #71717a;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            .form-container {
+                flex-direction: column;
+                border-radius: 20px;
+                padding: 12px;
+                gap: 10px;
+            }
+            .form-container input {
+                width: 100%;
+                padding: 8px 4px;
+            }
+            .unlock-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <div class="bg-grid"></div>
+    <div class="bg-matrix"></div>
+    <div class="glow-spot"></div>
 
-    <main class="hero-container">
-        <div class="content-wrapper">
-            
-            <h1 class="main-title">The #1 ad-link bypasser.<br>Paste and unlock.</h1>
-            <p class="sub-description">
-                Linkvertise, LootLabs, Rekonise, shorteners and paste sites. One quick check, then the clean destination.
-            </p>
+    <header>
+        <a href="#" class="logo-badge">
+            <img src="https://bypass.lc/logo.png" alt="logo"> bypass.lc
+        </a>
+    </header>
 
-            <div class="input-box-wrapper">
-                <div class="input-group">
-                    <i class="fa-solid fa-link input-icon"></i>
-                    <input type="text" id="targetUrl" placeholder="https://sub2unlock.com/..." autocomplete="off">
-                </div>
-                <button id="bypassBtn" class="unlock-btn" onclick="bypassLink()">
-                    <span id="btnText">Unlock</span>
-                    <i class="fa-solid fa-arrow-right" id="btnIcon"></i>
+    <main>
+        <h1>The #1 ad-link bypasser.<br><span>Paste and unlock.</span></h1>
+        <p class="subtitle">Linkvertise, LootLabs, Rekonise, shorteners and paste sites. One quick check, then the clean destination.</p>
+
+        <div class="form-container">
+            <i class="fa-solid fa-link link-icon"></i>
+            <input type="text" id="targetUrl" placeholder="https://linkvertise.com/..." autocomplete="off">
+            <button id="bypassBtn" class="unlock-btn" onclick="bypassLink()">
+                <span id="btnText">Unlock</span>
+                <i class="fa-solid fa-arrow-right" id="btnIcon"></i>
+            </button>
+        </div>
+
+        <!-- Result Box -->
+        <div id="resultContainer" class="result-box hidden">
+            <div class="result-header">
+                <i class="fa-solid fa-circle-check"></i> Berhasil Diekstrak:
+            </div>
+            <div class="result-content">
+                <input type="text" id="finalLinkInput" readonly>
+                <button id="copyBtn" onclick="copyResult()">
+                    <i class="fa-solid fa-copy"></i> Salin
                 </button>
             </div>
+            <a id="openLink" href="#" target="_blank" class="open-link">
+                Buka Tautan Langsung <i class="fa-solid fa-external-link-alt"></i>
+            </a>
+        </div>
 
-            <div id="resultContainer" class="result-box hidden">
-                <div class="result-header">
-                    <i class="fa-solid fa-circle-check"></i> Berhasil Diekstrak:
-                </div>
-                <div class="result-content">
-                    <input type="text" id="finalLinkInput" readonly>
-                    <button id="copyBtn" onclick="copyResult()">
-                        <i class="fa-solid fa-copy"></i> Salin
-                    </button>
-                </div>
-                <a id="openLink" href="#" target="_blank" class="open-link-btn">
-                    Buka Tautan Langsung <i class="fa-solid fa-external-link-alt"></i>
-                </a>
-            </div>
-
-            <div id="errorContainer" class="error-box hidden">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <span id="errorText">-</span>
-            </div>
-
+        <!-- Error Box -->
+        <div id="errorContainer" class="error-box hidden">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span id="errorText">-</span>
         </div>
     </main>
+
+    <footer>
+        <p>© 2026 bypass.lc • Powered by Cloudflare Workers & GitHub Pages</p>
+    </footer>
 
     <script>
         async function bypassLink() {
@@ -79,7 +380,7 @@
             resultContainer.classList.add('hidden');
             errorContainer.classList.add('hidden');
 
-            // URL Worker kamu sudah dipasang di sini secara otomatis
+            // Menggunakan Cloudflare Worker milikmu
             const workerUrl = "https://bypass.ggbloxlord.workers.dev/?url=" + encodeURIComponent(url);
 
             try {
@@ -95,7 +396,7 @@
                     errorContainer.classList.remove('hidden');
                 }
             } catch (err) {
-                errorText.innerText = "Gagal terhubung ke server worker.";
+                errorText.innerText = "Gagal terhubung ke server worker. Pastikan CORS di worker aktif.";
                 errorContainer.classList.remove('hidden');
             } finally {
                 bypassBtn.disabled = false;
