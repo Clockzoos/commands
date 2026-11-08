@@ -16,7 +16,7 @@ body {
     position: relative;
 }
 
-/* Background Grid Pattern ala Bypass.lc */
+/* Background Grid Pattern */
 .bg-grid {
     position: absolute;
     inset: 0;
@@ -27,7 +27,6 @@ body {
     z-index: 0;
 }
 
-/* Efek gradasi biru di pojok kanan atas mirip referensi */
 body::after {
     content: '';
     position: absolute;
