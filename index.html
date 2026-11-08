@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The #1 ad-link bypasser. Paste and unlock.</title>
-    <!-- Perhatikan: pastikan file style.css ada di folder yang sama -->
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -80,8 +79,8 @@
             resultContainer.classList.add('hidden');
             errorContainer.classList.add('hidden');
 
-            // ⚠️ Ganti URL Worker di bawah ini dengan milikmu yang aktif
-            const workerUrl = "https://gantidengankerjaaslimu.workers.dev/?url=" + encodeURIComponent(url);
+            // URL Worker kamu sudah dipasang di sini secara otomatis
+            const workerUrl = "https://bypass.ggbloxlord.workers.dev/?url=" + encodeURIComponent(url);
 
             try {
                 const response = await fetch(workerUrl);
