@@ -4,25 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The #1 ad-link bypasser. Paste and unlock.</title>
+    <!-- Perhatikan: pastikan file style.css ada di folder yang sama -->
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- Background Grid Motif ala Bypass.lc -->
     <div class="bg-grid"></div>
 
     <main class="hero-container">
         <div class="content-wrapper">
             
-            <!-- Judul Utama & Sub-teks -->
             <h1 class="main-title">The #1 ad-link bypasser.<br>Paste and unlock.</h1>
             <p class="sub-description">
                 Linkvertise, LootLabs, Rekonise, shorteners and paste sites. One quick check, then the clean destination.
             </p>
 
-            <!-- Input & Tombol Unlock -->
             <div class="input-box-wrapper">
                 <div class="input-group">
                     <i class="fa-solid fa-link input-icon"></i>
@@ -34,7 +32,6 @@
                 </button>
             </div>
 
-            <!-- Hasil Sukses -->
             <div id="resultContainer" class="result-box hidden">
                 <div class="result-header">
                     <i class="fa-solid fa-circle-check"></i> Berhasil Diekstrak:
@@ -50,7 +47,6 @@
                 </a>
             </div>
 
-            <!-- Pesan Error -->
             <div id="errorContainer" class="error-box hidden">
                 <i class="fa-solid fa-triangle-exclamation"></i>
                 <span id="errorText">-</span>
@@ -78,14 +74,13 @@
                 return;
             }
 
-            // Status Loading
             bypassBtn.disabled = true;
             btnText.innerText = "Unlocking...";
             btnIcon.className = "fa-solid fa-spinner fa-spin";
             resultContainer.classList.add('hidden');
             errorContainer.classList.add('hidden');
 
-            // ⚠️ Ganti URL Worker di bawah ini dengan milikmu
+            // ⚠️ Ganti URL Worker di bawah ini dengan milikmu yang aktif
             const workerUrl = "https://gantidengankerjaaslimu.workers.dev/?url=" + encodeURIComponent(url);
 
             try {
