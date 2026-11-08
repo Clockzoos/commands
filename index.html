@@ -3,102 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Bypass / Safelink Unshortener</title>
-    <!-- Menghubungkan file CSS -->
+    <title>The #1 ad-link bypasser. Paste and unlock.</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>⚡ Link Bypass Tool</h1>
-            <p>Masukkan link pendek atau safelink untuk melacak tujuan akhirnya.</p>
-        </header>
+    <!-- Background Grid Motif ala Bypass.lc -->
+    <div class="bg-grid"></div>
 
-        <div class="card">
-            <div class="input-group">
-                <label for="targetUrl">Tempel Link di Sini:</label>
-                <input type="text" id="targetUrl" placeholder="https://contoh.com/link-pendek...">
-            </div>
+    <main class="hero-container">
+        <div class="content-wrapper">
             
-            <button id="bypassBtn" onclick="bypassLink()">
-                <span id="btnText">Proses Link</span>
-            </button>
+            <!-- Judul Utama & Sub-teks -->
+            <h1 class="main-title">The #1 ad-link bypasser.<br>Paste and unlock.</h1>
+            <p class="sub-description">
+                Linkvertise, LootLabs, Rekonise, shorteners and paste sites. One quick check, then the clean destination.
+            </p>
 
-            <div id="resultContainer" class="result-box hidden">
-                <h3>Hasil Tujuan Akhir:</h3>
-                <div class="result-content">
-                    <a id="finalLink" href="#" target="_blank">-</a>
-                    <button id="copyBtn" onclick="copyResult()">Salin</button>
+            <!-- Input & Tombol Unlock -->
+            <div class="input-box-wrapper">
+                <div class="input-group">
+                    <i class="fa-solid fa-link input-icon"></i>
+                    <input type="text" id="targetUrl" placeholder="https://sub2unlock.com/..." autocomplete="off">
                 </div>
+                <button id="bypassBtn" class="unlock-btn" onclick="bypassLink()">
+                    <span id="btnText">Unlock</span>
+                    <i class="fa-solid fa-arrow-right" id="btnIcon"></i>
+                </button>
             </div>
 
+            <!-- Hasil Sukses -->
+            <div id="resultContainer" class="result-box hidden">
+                <div class="result-header">
+                    <i class="fa-solid fa-circle-check"></i> Berhasil Diekstrak:
+                </div>
+                <div class="result-content">
+                    <input type="text" id="finalLinkInput" readonly>
+                    <button id="copyBtn" onclick="copyResult()">
+                        <i class="fa-solid fa-copy"></i> Salin
+                    </button>
+                </div>
+                <a id="openLink" href="#" target="_blank" class="open-link-btn">
+                    Buka Tautan Langsung <i class="fa-solid fa-external-link-alt"></i>
+                </a>
+            </div>
+
+            <!-- Pesan Error -->
             <div id="errorContainer" class="error-box hidden">
-                <p id="errorText">-</p>
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span id="errorText">-</span>
             </div>
+
         </div>
+    </main>
 
-        <footer>
-            <p>Ditenagai oleh GitHub Pages & Cloudflare Workers</p>
-        </footer>
-    </div>
-
-    <!-- Script Penghubung ke Cloudflare Worker -->
     <script>
         async function bypassLink() {
-            const urlInput = document.getElementById('targetUrl').value.trim();
+            const urlInput = document.getElementById('targetUrl');
+            const url = urlInput.value.trim();
             const btnText = document.getElementById('btnText');
+            const btnIcon = document.getElementById('btnIcon');
             const bypassBtn = document.getElementById('bypassBtn');
             const resultContainer = document.getElementById('resultContainer');
             const errorContainer = document.getElementById('errorContainer');
-            const finalLink = document.getElementById('finalLink');
+            const finalLinkInput = document.getElementById('finalLinkInput');
+            const openLink = document.getElementById('openLink');
             const errorText = document.getElementById('errorText');
 
-            // Validasi input kosong
-            if (!urlInput) {
-                alert("Mohon masukkan link terlebih dahulu!");
+            if (!url) {
+                urlInput.style.borderColor = "#ef4444";
+                setTimeout(() => { urlInput.style.borderColor = ""; }, 500);
                 return;
             }
 
-            // Ubah tombol jadi loading
+            // Status Loading
             bypassBtn.disabled = true;
-            btnText.innerText = "Memproses...";
+            btnText.innerText = "Unlocking...";
+            btnIcon.className = "fa-solid fa-spinner fa-spin";
             resultContainer.classList.add('hidden');
             errorContainer.classList.add('hidden');
 
-            // ⚠️ GANTI URL DI BAWAH DENGAN URL CLOUDFLARE WORKER MILIKMU SENDIRI ⚠️
-            const workerUrl = "https://gantidengankerjaaslimu.workers.dev/?url=" + encodeURIComponent(urlInput);
+            // ⚠️ Ganti URL Worker di bawah ini dengan milikmu
+            const workerUrl = "https://gantidengankerjaaslimu.workers.dev/?url=" + encodeURIComponent(url);
 
             try {
                 const response = await fetch(workerUrl);
                 const data = await response.json();
 
                 if (data.success) {
-                    finalLink.href = data.final_url;
-                    finalLink.innerText = data.final_url;
+                    finalLinkInput.value = data.final_url;
+                    openLink.href = data.final_url;
                     resultContainer.classList.remove('hidden');
                 } else {
-                    errorText.innerText = "Gagal: " + (data.error || "Terjadi kesalahan sistem.");
+                    errorText.innerText = data.error || "Gagal memproses tautan.";
                     errorContainer.classList.remove('hidden');
                 }
             } catch (err) {
-                errorText.innerText = "Kesalahan jaringan: Gagal terhubung ke Cloudflare Worker.";
+                errorText.innerText = "Gagal terhubung ke server worker.";
                 errorContainer.classList.remove('hidden');
             } finally {
-                // Kembalikan tombol ke semula
                 bypassBtn.disabled = false;
-                btnText.innerText = "Proses Link";
+                btnText.innerText = "Unlock";
+                btnIcon.className = "fa-solid fa-arrow-right";
             }
         }
 
         function copyResult() {
-            const finalLinkText = document.getElementById('finalLink').innerText;
-            navigator.clipboard.writeText(finalLinkText).then(() => {
+            const finalLinkInput = document.getElementById('finalLinkInput');
+            finalLinkInput.select();
+            navigator.clipboard.writeText(finalLinkInput.value).then(() => {
                 const copyBtn = document.getElementById('copyBtn');
-                copyBtn.innerText = "Disalin!";
-                setTimeout(() => { copyBtn.innerText = "Salin"; }, 2000);
+                copyBtn.innerHTML = `<i class="fa-solid fa-check"></i> Tersalin!`;
+                copyBtn.style.background = "#059669";
+                setTimeout(() => { 
+                    copyBtn.innerHTML = `<i class="fa-solid fa-copy"></i> Salin`; 
+                    copyBtn.style.background = "";
+                }, 2000);
             });
         }
     </script>
