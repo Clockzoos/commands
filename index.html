@@ -1,422 +1,426 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Ad-Link Bypasser for Linkvertise, LootLabs & More</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>Entropy - Ultimate Admin Manager</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f0f; color: #fff; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; padding-bottom: 50px; }
+        
+        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 10px; }
+        h2 { color: #ffbb00; margin: 0; }
+        
+        .btn-main { background: #ffbb00; color: #000; padding: 10px 20px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; text-decoration: none; display: inline-block; font-size: 14px; }
+        .btn-main:hover { background: #e0a800; }
+        .btn-danger { background: #ef4444; color: #fff; padding: 6px 12px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; font-size: 12px; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-edit { background: #38bdf8; color: #000; padding: 6px 12px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; font-size: 12px; text-decoration: none; }
+        .btn-edit:hover { background: #0ea5e9; }
 
-        body {
-            background-color: #09090b;
-            color: #f4f4f5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow-x: hidden;
-        }
+        /* POSTS LIST */
+        .post-list-card { background: #161616; border: 1px solid #333; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .post-item { display: flex; justify-content: space-between; align-items: center; background: #111; border: 1px solid #222; padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+        .post-info h4 { margin: 0 0 4px 0; color: #fff; font-size: 15px; }
+        .post-info p { margin: 0; color: #888; font-size: 12px; }
+        .post-actions { display: flex; gap: 8px; }
 
-        /* Background Grid & Glow Effects ala bypass.lc */
-        .bg-matrix {
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 32px 32px;
-            z-index: 0;
-        }
+        /* MODAL FORM */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; }
+        .modal-content { background: #161616; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; border: 1px solid #333; color: #fff; max-height: 90vh; overflow-y: auto; box-sizing: border-box; text-align: left; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 14px; color: #ccc; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; background: #0f0f0f; color: #fff; border: 1px solid #333; border-radius: 6px; box-sizing: border-box; font-size: 14px; outline: none; }
+        .form-group textarea { resize: vertical; min-height: 140px; font-family: monospace; }
+        
+        .tag-input-wrapper { display: flex; gap: 8px; align-items: center; }
+        .tag-input-wrapper input { flex-grow: 1; }
+        .btn-add-tag { background: #222; color: #ffbb00; border: 1px solid #ffbb00; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; display: none; white-space: nowrap; }
+        
+        .added-tags-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .selected-tag-chip { background: rgba(255, 187, 0, 0.2); color: #ffbb00; border: 1px solid #ffbb00; padding: 4px 10px; border-radius: 20px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; font-weight: bold; }
+        .selected-tag-chip span { cursor: pointer; color: #ff5555; font-weight: bold; font-size: 14px; }
+        
+        .close-btn { float: right; font-size: 24px; cursor: pointer; color: #888; }
+        .close-btn:hover { color: #fff; }
 
-        .glow-spot {
-            position: absolute;
-            top: -10vh;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60vw;
-            height: 40vh;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        header {
-            position: relative;
-            z-index: 10;
-            padding: 20px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 6px 14px 6px 6px;
-            border-radius: 9999px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(24, 24, 27, 0.6);
-            backdrop-filter: blur(8px);
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .logo-badge img {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-        }
-
-        main {
-            position: relative;
-            z-index: 10;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: clamp(2.2rem, 5vw, 3.8rem);
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            line-height: 1.1;
-            margin-bottom: 16px;
-            color: #fff;
-        }
-
-        h1 span {
-            color: #71717a;
-        }
-
-        p.subtitle {
-            font-size: clamp(0.95rem, 2vw, 1.15rem);
-            color: #a1a1aa;
-            max-width: 520px;
-            line-height: 1.5;
-            margin-bottom: 36px;
-        }
-
-        /* Form Input Container */
-        .form-container {
-            width: 100%;
-            max-width: 640px;
-            background: rgba(24, 24, 27, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 9999px;
-            padding: 8px 8px 8px 20px;
-            display: flex;
-            align-items: center;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            transition: border-color 0.2s;
-        }
-
-        .form-container:focus-within {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-
-        .form-container i.link-icon {
-            color: #71717a;
-            margin-right: 12px;
-        }
-
-        .form-container input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: #fff;
-            font-size: 1rem;
-        }
-
-        .form-container input::placeholder {
-            color: #52525b;
-        }
-
-        .unlock-btn {
-            background-color: #fff;
-            color: #09090b;
-            border: none;
-            border-radius: 9999px;
-            padding: 12px 24px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: opacity 0.2s, transform 0.1s;
-            white-space: nowrap;
-        }
-
-        .unlock-btn:hover {
-            opacity: 0.9;
-        }
-
-        .unlock-btn:active {
-            transform: scale(0.98);
-        }
-
-        .unlock-btn:disabled {
-            background-color: #27272a;
-            color: #71717a;
-            cursor: not-allowed;
-        }
-
-        /* Result & Error Box */
-        .result-box, .error-box {
-            width: 100%;
-            max-width: 640px;
-            margin-top: 20px;
-            padding: 16px;
-            border-radius: 16px;
-            text-align: left;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .result-box {
-            background: rgba(6, 78, 59, 0.3);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        .result-header {
-            color: #34d399;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .result-content {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        .result-content input {
-            width: 100%;
-            background: rgba(9, 9, 11, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 8px 12px;
-            color: #34d399;
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        #copyBtn {
-            background: #059669;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        #copyBtn:hover {
-            background: #047857;
-        }
-
-        .open-link {
-            display: block;
-            text-align: center;
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-
-        .open-link:hover {
-            background: rgba(16, 185, 129, 0.25);
-        }
-
-        .error-box {
-            background: rgba(127, 29, 29, 0.3);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        footer {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            padding: 24px;
-            font-size: 0.85rem;
-            color: #71717a;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 640px) {
-            .form-container {
-                flex-direction: column;
-                border-radius: 20px;
-                padding: 12px;
-                gap: 10px;
-            }
-            .form-container input {
-                width: 100%;
-                padding: 8px 4px;
-            }
-            .unlock-btn {
-                width: 100%;
-                justify-content: center;
-                padding: 12px;
-            }
-        }
+        /* CUSTOM ALERT MODAL */
+        #customAlertModal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
+        .custom-alert-box { background: #161616; border: 1px solid #333; padding: 25px; border-radius: 12px; width: 85%; max-width: 350px; text-align: center; }
     </style>
 </head>
 <body>
 
-    <div class="bg-matrix"></div>
-    <div class="glow-spot"></div>
-
-    <header>
-        <a href="#" class="logo-badge">
-            <img src="https://bypass.lc/logo.png" alt="logo"> bypass.lc
-        </a>
-    </header>
-
-    <main>
-        <h1>The #1 ad-link bypasser.<br><span>Paste and unlock.</span></h1>
-        <p class="subtitle">Linkvertise, LootLabs, Rekonise, shorteners and paste sites. One quick check, then the clean destination.</p>
-
-        <div class="form-container">
-            <i class="fa-solid fa-link link-icon"></i>
-            <input type="text" id="targetUrl" placeholder="https://linkvertise.com/..." autocomplete="off">
-            <button id="bypassBtn" class="unlock-btn" onclick="bypassLink()">
-                <span id="btnText">Unlock</span>
-                <i class="fa-solid fa-arrow-right" id="btnIcon"></i>
-            </button>
-        </div>
-
-        <!-- Result Box -->
-        <div id="resultContainer" class="result-box hidden">
-            <div class="result-header">
-                <i class="fa-solid fa-circle-check"></i> Berhasil Diekstrak:
+    <!-- ADMIN DASHBOARD (LANGSUNG TERBUKA TANPA SANDI) -->
+    <div class="container" id="adminDashboard">
+        <div class="header-section">
+            <div>
+                <h2>ENTROPY ADMIN MANAGER</h2>
+                <p style="color: #888; font-size: 13px; margin: 3px 0 0 0;">Create, edit custom IDs, and manage all your posts instantly[span_2](start_span)[span_2](end_span).</p>
             </div>
-            <div class="result-content">
-                <input type="text" id="finalLinkInput" readonly>
-                <button id="copyBtn" onclick="copyResult()">
-                    <i class="fa-solid fa-copy"></i> Salin
-                </button>
+            <div>
+                <button class="btn-main" onclick="openPostModal('create')">+ Create New Post</button>
+                <a href="./" class="btn-main" style="background: #333; color: #fff; margin-left: 8px;">View Website</a>
             </div>
-            <a id="openLink" href="#" target="_blank" class="open-link">
-                Buka Tautan Langsung <i class="fa-solid fa-external-link-alt"></i>
-            </a>
         </div>
 
-        <!-- Error Box -->
-        <div id="errorContainer" class="error-box hidden">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <span id="errorText">-</span>
+        <div class="post-list-card">
+            <h3 style="color: #ffbb00; margin-top: 0; margin-bottom: 15px;">All Existing Posts</h3>
+            <div id="adminPostList">
+                <p style="color: #777;">Loading posts...</p>
+            </div>
         </div>
-    </main>
+    </div>
 
-    <footer>
-        <p>© 2026 bypass.lc • Powered by Cloudflare Workers & GitHub Pages</p>
-    </footer>
+    <!-- CREATE / EDIT POST MODAL -->
+    <div id="postModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closePostModal()">&times;</span>
+            <h2 id="modalTitleText" style="margin-top: 0; color: #ffbb00;">Create New Post</h2>
+            
+            <form id="postForm" onsubmit="savePostData(event)">
+                <div class="form-group">
+                    <label>Custom Post ID (e.g. 39625):</label>
+                    <input type="text" id="postIdInput" placeholder="e.g. 39625" required>
+                    <input type="hidden" id="originalPostId">
+                </div>
+
+                <div class="form-group">
+                    <label>Creator Name:</label>
+                    <input type="text" id="hubNameInput" value="Nafyari" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Script Title:</label>
+                    <input type="text" id="scriptTitleInput" placeholder="e.g. Title Owner" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Category Type:</label>
+                    <select id="categoryTypeInput" onchange="handleCategoryChange()" required>
+                        <option value="script">Script</option>
+                        <option value="toolbox_id">ToolBox ID</option>
+                        <option value="game_copying">Game Copying</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Tags (3-6 Tags):</label>
+                    <div class="tag-input-wrapper">
+                        <input type="text" id="tagInputBox" placeholder="Type a tag..." oninput="checkTagInput()">
+                        <button type="button" class="btn-add-tag" id="addTagBtn" onclick="addTagFromInput()">Add</button>
+                    </div>
+                    <div id="addedTagsList" class="added-tags-container"></div>
+                </div>
+
+                <div class="form-group">
+                    <label id="linkFieldLabel">Script / Code Content:</label>
+                    <textarea id="scriptContentInput" placeholder="Paste Lua script here..." required style="white-space: pre;"></textarea>
+                </div>
+
+                <button type="submit" id="modalSubmitBtn" class="btn-main" style="width: 100%; margin-top: 10px;">Publish Post 🚀</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- CUSTOM ALERT MODAL -->
+    <div id="customAlertModal" class="modal">
+        <div class="custom-alert-box modal-content" style="max-width: 350px; text-align: center;">
+            <div id="customAlertMessage" style="margin-bottom: 20px; font-size: 15px;">Message</div>
+            <button class="btn-main" style="width: 100%;" onclick="closeCustomAlert()">OK</button>
+        </div>
+    </div>
 
     <script>
-        async function bypassLink() {
-            const urlInput = document.getElementById('targetUrl');
-            const url = urlInput.value.trim();
-            const btnText = document.getElementById('btnText');
-            const btnIcon = document.getElementById('btnIcon');
-            const bypassBtn = document.getElementById('bypassBtn');
-            const resultContainer = document.getElementById('resultContainer');
-            const errorContainer = document.getElementById('errorContainer');
-            const finalLinkInput = document.getElementById('finalLinkInput');
-            const openLink = document.getElementById('openLink');
-            const errorText = document.getElementById('errorText');
+        const PUBLIC_BIN_ID = "6aef05abac6210605a74f72a";
+        const MASTER_KEY = "$2a$10$7kUozSyzkNytbUxnN7/kv.xInV14ItUgvNAWdjKEswZ0M.DDWgL/e";
+        const DEFAULT_AUTO_IMAGE = "https://tr.rbxcdn.com/180DAY-2944a7f2090621fd07d89499ea40fa46/500/280/Image/Jpeg/noFilter";
 
-            if (!url) {
-                urlInput.style.borderColor = "#ef4444";
-                setTimeout(() => { urlInput.style.borderColor = ""; }, 500);
-                return;
-            }
+        let allPostsData = [];
+        let selectedTags = [];
+        let alertCallback = null;
+        let currentMode = 'create';
 
-            bypassBtn.disabled = true;
-            btnText.innerText = "Unlocking...";
-            btnIcon.className = "fa-solid fa-spinner fa-spin";
-            resultContainer.classList.add('hidden');
-            errorContainer.classList.add('hidden');
+        window.onload = function() {
+            // Langsung load data tanpa cek login / sandi[span_3](start_span)[span_3](end_span)
+            loadAdminPosts();
+        };
 
-            // Menggunakan Cloudflare Worker milikmu
-            const workerUrl = "https://bypass.ggbloxlord.workers.dev/?url=" + encodeURIComponent(url);
+        function showAlert(msg, cb = null) {
+            document.getElementById('customAlertMessage').innerText = msg;
+            document.getElementById('customAlertModal').style.display = 'flex';
+            alertCallback = cb;
+        }
 
+        function closeCustomAlert() {
+            document.getElementById('customAlertModal').style.display = 'none';
+            if (typeof alertCallback === 'function') alertCallback();
+        }
+
+        async function loadAdminPosts() {
             try {
-                const response = await fetch(workerUrl);
-                const data = await response.json();
-
-                if (data.success) {
-                    finalLinkInput.value = data.final_url;
-                    openLink.href = data.final_url;
-                    resultContainer.classList.remove('hidden');
-                } else {
-                    errorText.innerText = data.error || "Gagal memproses tautan.";
-                    errorContainer.classList.remove('hidden');
-                }
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${PUBLIC_BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': MASTER_KEY }
+                });
+                let data = await res.json();
+                allPostsData = data.record || [];
+                renderAdminPosts(allPostsData);
             } catch (err) {
-                errorText.innerText = "Gagal terhubung ke server worker. Pastikan CORS di worker aktif.";
-                errorContainer.classList.remove('hidden');
-            } finally {
-                bypassBtn.disabled = false;
-                btnText.innerText = "Unlock";
-                btnIcon.className = "fa-solid fa-arrow-right";
+                console.error(err);
+                document.getElementById('adminPostList').innerHTML = `<p style="color: #ff5555;">Failed to load posts.</p>`;
             }
         }
 
-        function copyResult() {
-            const finalLinkInput = document.getElementById('finalLinkInput');
-            finalLinkInput.select();
-            navigator.clipboard.writeText(finalLinkInput.value).then(() => {
-                const copyBtn = document.getElementById('copyBtn');
-                copyBtn.innerHTML = `<i class="fa-solid fa-check"></i> Tersalin!`;
-                copyBtn.style.background = "#059669";
-                setTimeout(() => { 
-                    copyBtn.innerHTML = `<i class="fa-solid fa-copy"></i> Salin`; 
-                    copyBtn.style.background = "";
-                }, 2000);
+        function renderAdminPosts(posts) {
+            let container = document.getElementById('adminPostList');
+            container.innerHTML = "";
+
+            if (!Array.isArray(posts) || posts.length === 0) {
+                container.innerHTML = `<p style="color: #777;">No posts available.</p>`;
+                return;
+            }
+
+            posts.forEach((item) => {
+                container.innerHTML += `
+                    <div class="post-item">
+                        <div class="post-info">
+                            <h4>#${item.id} - ${item.title}</h4>
+                            <p>Creator: <span style="color: #ffbb00;">${item.hubName || "Anonymous"}</span> · Category: ${item.category || "script"}</p>
+                        </div>
+                        <div class="post-actions">
+                            <button class="btn-edit" onclick="openPostModal('edit', '${item.id}')">✏️ Edit / Change ID</button>
+                            <button class="btn-danger" onclick="deletePost('${item.id}')">🗑️ Delete</button>
+                        </div>
+                    </div>
+                `;
             });
+        }
+
+        function openPostModal(mode, postId = null) {
+            currentMode = mode;
+            document.getElementById('postModal').style.display = 'flex';
+
+            if (mode === 'create') {
+                document.getElementById('modalTitleText').innerText = "Create New Post";
+                document.getElementById('postIdInput').value = Math.floor(10000 + Math.random() * 90000).toString();
+                document.getElementById('originalPostId').value = "";
+                document.getElementById('hubNameInput').value = "Nafyari";
+                document.getElementById('scriptTitleInput').value = "";
+                document.getElementById('categoryTypeInput').value = "script";
+                document.getElementById('scriptContentInput').value = "";
+                document.getElementById('modalSubmitBtn').innerText = "Publish Post 🚀";
+                handleCategoryChange();
+            } else if (mode === 'edit') {
+                let post = allPostsData.find(p => p.id === postId);
+                if (!post) return;
+
+                document.getElementById('modalTitleText').innerText = "Edit Post & Custom ID";
+                document.getElementById('postIdInput').value = post.id;
+                document.getElementById('originalPostId').value = post.id;
+                document.getElementById('hubNameInput').value = post.hubName || "Nafyari";
+                document.getElementById('scriptTitleInput').value = post.title || "";
+                document.getElementById('categoryTypeInput').value = post.category || "script";
+                document.getElementById('scriptContentInput').value = post.link || "";
+                document.getElementById('modalSubmitBtn').innerText = "Update Post ✨";
+
+                selectedTags = [];
+                if (post.tags) {
+                    let tagsArr = Array.isArray(post.tags) ? post.tags : post.tags.split(',');
+                    tagsArr.forEach(t => {
+                        let trimmed = t.trim();
+                        if (trimmed && !selectedTags.includes(trimmed)) selectedTags.push(trimmed);
+                    });
+                }
+                renderTags();
+            }
+        }
+
+        function closePostModal() {
+            document.getElementById('postModal').style.display = 'none';
+        }
+
+        function handleCategoryChange() {
+            let cat = document.getElementById('categoryTypeInput').value;
+            let linkLabel = document.getElementById('linkFieldLabel');
+            let linkInput = document.getElementById('scriptContentInput');
+            selectedTags = [];
+
+            if (cat === 'script') {
+                selectedTags.push('script');
+                linkLabel.innerText = "Script / Code Content:";
+                linkInput.placeholder = "Paste your Lua script here directly...";
+            } else if (cat === 'toolbox_id') {
+                selectedTags.push('toolbox');
+                linkLabel.innerText = "Toolbox ID:";
+                linkInput.placeholder = "Enter ID Toolbox...";
+            } else if (cat === 'game_copying') {
+                selectedTags.push('uncopylocked');
+                linkLabel.innerText = "Games ID:";
+                linkInput.placeholder = "Enter Place ID...";
+            }
+            renderTags();
+        }
+
+        function checkTagInput() {
+            let val = document.getElementById('tagInputBox').value.trim();
+            document.getElementById('addTagBtn').style.display = val.length > 0 ? 'inline-block' : 'none';
+        }
+
+        function addTagFromInput() {
+            let input = document.getElementById('tagInputBox');
+            let val = input.value.trim().toLowerCase();
+            if (!val) return;
+            if (selectedTags.length >= 6) { showAlert('Maximum 6 tags allowed.'); return; }
+            if (!selectedTags.includes(val)) {
+                selectedTags.push(val);
+                input.value = "";
+                document.getElementById('addTagBtn').style.display = 'none';
+                renderTags();
+            } else {
+                showAlert('Tag already added.');
+            }
+        }
+
+        function removeTag(index) {
+            let cat = document.getElementById('categoryTypeInput').value;
+            selectedTags.splice(index, 1);
+            if (cat === 'script' && !selectedTags.includes('script')) selectedTags.unshift('script');
+            if (cat === 'toolbox_id' && !selectedTags.includes('toolbox')) selectedTags.unshift('toolbox');
+            if (cat === 'game_copying' && !selectedTags.includes('uncopylocked')) selectedTags.unshift('uncopylocked');
+            renderTags();
+        }
+
+        function renderTags() {
+            let container = document.getElementById('addedTagsList');
+            container.innerHTML = "";
+            selectedTags.forEach((tag, idx) => {
+                container.innerHTML += `<div class="selected-tag-chip">#${tag} <span onclick="removeTag(${idx})">&times;</span></div>`;
+            });
+        }
+
+        async function savePostData(event) {
+            event.preventDefault();
+            let newId = document.getElementById('postIdInput').value.trim();
+            let origId = document.getElementById('originalPostId').value;
+            let hubName = document.getElementById('hubNameInput').value.trim();
+            let title = document.getElementById('scriptTitleInput').value.trim();
+            let category = document.getElementById('categoryTypeInput').value;
+            let link = document.getElementById('scriptContentInput').value;
+            let submitBtn = document.getElementById('modalSubmitBtn');
+
+            if (selectedTags.length < 3 || selectedTags.length > 6) {
+                showAlert('Please ensure you have between 3 and 6 tags added.');
+                return;
+            }
+
+            submitBtn.innerText = "Saving...";
+            submitBtn.disabled = true;
+
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${PUBLIC_BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': MASTER_KEY }
+                });
+                let data = await res.json();
+                let scripts = data.record || [];
+                if (!Array.isArray(scripts)) scripts = [];
+
+                if (currentMode === 'create') {
+                    let exists = scripts.find(item => item.id === newId);
+                    if (exists) {
+                        showAlert('Error: ID "' + newId + '" is already taken! Use another ID.');
+                        submitBtn.innerText = "Publish Post 🚀";
+                        submitBtn.disabled = false;
+                        return;
+                    }
+
+                    scripts.unshift({
+                        id: newId,
+                        hubName,
+                        title,
+                        category,
+                        tags: selectedTags.join(','),
+                        image: DEFAULT_AUTO_IMAGE,
+                        link
+                    });
+                } else if (currentMode === 'edit') {
+                    if (newId !== origId) {
+                        let exists = scripts.find(item => item.id === newId);
+                        if (exists) {
+                            showAlert('Error: ID "' + newId + '" is already taken by another post!');
+                            submitBtn.innerText = "Update Post ✨";
+                            submitBtn.disabled = false;
+                            return;
+                        }
+                    }
+
+                    let index = scripts.findIndex(item => item.id === origId);
+                    if (index !== -1) {
+                        scripts[index] = {
+                            id: newId,
+                            hubName,
+                            title,
+                            category,
+                            tags: selectedTags.join(','),
+                            image: scripts[index].image || DEFAULT_AUTO_IMAGE,
+                            link
+                        };
+                    }
+                }
+
+                let putRes = await fetch(`https://api.jsonbin.io/v3/b/${PUBLIC_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+                    body: JSON.stringify(scripts)
+                });
+
+                if (putRes.ok) {
+                    showAlert('Success! Post saved successfully.', () => {
+                        closePostModal();
+                        loadAdminPosts();
+                    });
+                } else {
+                    showAlert('Failed to save to server.');
+                    submitBtn.innerText = currentMode === 'create' ? "Publish Post 🚀" : "Update Post ✨";
+                    submitBtn.disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                showAlert('Connection error.');
+                submitBtn.innerText = currentMode === 'create' ? "Publish Post 🚀" : "Update Post ✨";
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function deletePost(postId) {
+            if (!confirm("Are you sure you want to delete post #" + postId + "?")) return;
+
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${PUBLIC_BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': MASTER_KEY }
+                });
+                let data = await res.json();
+                let scripts = data.record || [];
+                if (!Array.isArray(scripts)) scripts = [];
+
+                scripts = scripts.filter(item => item.id !== postId);
+
+                let putRes = await fetch(`https://api.jsonbin.io/v3/b/${PUBLIC_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+                    body: JSON.stringify(scripts)
+                });
+
+                if (putRes.ok) {
+                    showAlert('Post successfully deleted!');
+                    loadAdminPosts();
+                } else {
+                    showAlert('Failed to delete post.');
+                }
+            } catch(err) {
+                console.error(err);
+                showAlert('Connection error.');
+            }
         }
     </script>
 </body>
