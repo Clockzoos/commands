@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entropy - Ultimate Admin Manager</title>
+    <title>Entropy Post Manager</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f0f; color: #fff; margin: 0; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; padding-bottom: 50px; }
@@ -56,12 +56,12 @@
     <div class="container" id="adminDashboard">
         <div class="header-section">
             <div>
-                <h2>ENTROPY ADMIN MANAGER</h2>
-                <p style="color: #888; font-size: 13px; margin: 3px 0 0 0;">Create, edit custom IDs, and manage all your posts instantly[span_2](start_span)[span_2](end_span).</p>
+                <h2>ENTROPY POST MANAGER</h2>
+                <p style="color: #888; font-size: 13px; margin: 3px 0 0 0;">Create, edit custom IDs, and manage all your posts instantly</p>
             </div>
             <div>
                 <button class="btn-main" onclick="openPostModal('create')">+ Create New Post</button>
-                <a href="./" class="btn-main" style="background: #333; color: #fff; margin-left: 8px;">View Website</a>
+                <a href="https://entropy-page.github.io/studio/" class="btn-main" style="background: #333; color: #fff; margin-left: 8px;">Back To Main Webs</a>
             </div>
         </div>
 
@@ -189,7 +189,7 @@
                             <p>Creator: <span style="color: #ffbb00;">${item.hubName || "Anonymous"}</span> · Category: ${item.category || "script"}</p>
                         </div>
                         <div class="post-actions">
-                            <button class="btn-edit" onclick="openPostModal('edit', '${item.id}')">✏️ Edit / Change ID</button>
+                            <button class="btn-edit" onclick="openPostModal('edit', '${item.id}')"> Edit Post</button>
                             <button class="btn-danger" onclick="deletePost('${item.id}')">🗑️ Delete</button>
                         </div>
                     </div>
