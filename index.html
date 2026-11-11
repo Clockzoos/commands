@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entropy Post Manager</title>
+    <title>Clockzoos - Post Manager</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f0f0f; color: #fff; margin: 0; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; padding-bottom: 50px; }
@@ -52,16 +52,17 @@
 </head>
 <body>
 
-    <!-- ADMIN DASHBOARD (LANGSUNG TERBUKA TANPA SANDI) -->
+    <!-- ADMIN DASHBOARD -->
     <div class="container" id="adminDashboard">
         <div class="header-section">
             <div>
-                <h2>ENTROPY POST MANAGER</h2>
+                <h2>Clockzoos - Post Manager</h2>
                 <p style="color: #888; font-size: 13px; margin: 3px 0 0 0;">Create, edit custom IDs, and manage all your posts instantly</p>
             </div>
             <div>
                 <button class="btn-main" onclick="openPostModal('create')">+ Create New Post</button>
-                <a href="https://entropy-page.github.io/studio/" class="btn-main" style="background: #333; color: #fff; margin-left: 8px;">Back To Main Webs</a>
+                <!-- Ganti link href di bawah ini dengan link repository utama website Clockzoos Anda -->
+                <a href="https://Clockzoos.github.io/studio/" class="btn-main" style="background: #333; color: #fff; margin-left: 8px;">Back To Main Webs</a>
             </div>
         </div>
 
@@ -88,7 +89,7 @@
 
                 <div class="form-group">
                     <label>Creator Name:</label>
-                    <input type="text" id="hubNameInput" value="Nafyari" required>
+                    <input type="text" id="hubNameInput" value="Clockzoos" required>
                 </div>
 
                 <div class="form-group">
@@ -143,7 +144,6 @@
         let currentMode = 'create';
 
         window.onload = function() {
-            // Langsung load data tanpa cek login / sandi[span_3](start_span)[span_3](end_span)
             loadAdminPosts();
         };
 
@@ -186,7 +186,7 @@
                     <div class="post-item">
                         <div class="post-info">
                             <h4>#${item.id} - ${item.title}</h4>
-                            <p>Creator: <span style="color: #ffbb00;">${item.hubName || "Anonymous"}</span> · Category: ${item.category || "script"}</p>
+                            <p>Creator: <span style="color: #ffbb00;">${item.hubName || "Clockzoos"}</span> · Category: ${item.category || "script"}</p>
                         </div>
                         <div class="post-actions">
                             <button class="btn-edit" onclick="openPostModal('edit', '${item.id}')"> Edit Post</button>
@@ -205,7 +205,7 @@
                 document.getElementById('modalTitleText').innerText = "Create New Post";
                 document.getElementById('postIdInput').value = Math.floor(10000 + Math.random() * 90000).toString();
                 document.getElementById('originalPostId').value = "";
-                document.getElementById('hubNameInput').value = "Nafyari";
+                document.getElementById('hubNameInput').value = "Clockzoos";
                 document.getElementById('scriptTitleInput').value = "";
                 document.getElementById('categoryTypeInput').value = "script";
                 document.getElementById('scriptContentInput').value = "";
@@ -218,7 +218,7 @@
                 document.getElementById('modalTitleText').innerText = "Edit Post & Custom ID";
                 document.getElementById('postIdInput').value = post.id;
                 document.getElementById('originalPostId').value = post.id;
-                document.getElementById('hubNameInput').value = post.hubName || "Nafyari";
+                document.getElementById('hubNameInput').value = post.hubName || "Clockzoos";
                 document.getElementById('scriptTitleInput').value = post.title || "";
                 document.getElementById('categoryTypeInput').value = post.category || "script";
                 document.getElementById('scriptContentInput').value = post.link || "";
@@ -411,7 +411,7 @@
                     body: JSON.stringify(scripts)
                 });
 
-                if (putRes.ok) {
+                if (putRes.oek || putRes.ok) {
                     showAlert('Post successfully deleted!');
                     loadAdminPosts();
                 } else {
